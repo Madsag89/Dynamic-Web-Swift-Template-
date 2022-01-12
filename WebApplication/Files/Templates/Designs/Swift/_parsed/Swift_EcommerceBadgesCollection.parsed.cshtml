@@ -1,0 +1,107 @@
+﻿@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
+@using Dynamicweb
+
+@{ 
+	@* Branding Themes Fonts *@
+	var brandingPageId = Model.Area.Item.GetLink("BrandingPage") != null ? Model.Area.Item.GetLink("BrandingPage").PageId : 0;
+	var themePageId = Model.Area.Item.GetLink("ThemesPage") != null ? Model.Area.Item.GetLink("ThemesPage").PageId : 0;
+
+	var brandingPage = Dynamicweb.Services.Pages?.GetPage(brandingPageId) ?? null;
+	var themesParagraphLastChanged = Services.Paragraphs.GetParagraphsByPageId(themePageId).OrderByDescending(p => p.Audit.LastModifiedAt).FirstOrDefault();
+	var cssLastModified = brandingPage.Audit.LastModifiedAt > themesParagraphLastChanged.Audit.LastModifiedAt ? brandingPage.Audit.LastModifiedAt : themesParagraphLastChanged.Audit.LastModifiedAt;
+
+	var cssStyleFileInfo = new System.IO.FileInfo(Dynamicweb.Core.SystemInformation.MapPath("~/Files/Templates/Designs/Swift/Assets/css/styles.css"));
+	var jsFileInfo = new System.IO.FileInfo(Dynamicweb.Core.SystemInformation.MapPath("~/Files/Templates/Designs/Swift/Assets/js/scripts.js"));
+}
+
+<!doctype html>
+<html lang="@Pageview.Area.CultureInfo.TwoLetterISOLanguageName">
+
+    <head>
+        @* Required meta tags *@
+		<meta charset="utf-8">
+		<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0">
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/css/styles.css?@cssStyleFileInfo.LastWriteTime.Ticks" as="style">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/tiny-slider.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/plyr.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/aos.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/flatpickr.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/scripts.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+
+		<link rel="shortcut icon" href="~/Files/Templates/Designs/Swift/Assets/Images/favicon.png" />
+		<link rel="apple-touch-icon" href="~/Files/Templates/Designs/Swift/Assets/Images/logo_transparent.png" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta name="googlebot-news" content="nosnippet">
+
+		@Model.MetaTags
+
+		<title>@Model.Title</title>
+
+
+		@* Bootstrap + Swift stylesheet *@
+		<link href="~/Files/Templates/Designs/Swift/Assets/css/styles.css?@cssStyleFileInfo.LastWriteTime.Ticks" rel="stylesheet" media="all" type="text/css">
+
+		@* Branding and Themes min stylesheet *@
+		<link href="~/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_styles_@(Model.Area.ID).min.css?@cssLastModified.Ticks" rel="stylesheet" media="all" type="text/css" data-last-modified-content="@cssLastModified">
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/tiny-slider.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/plyr.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/aos.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/flatpickr.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/scripts.js?@jsFileInfo.LastWriteTime.Ticks" async></script>
+	</head>
+
+    <body class="brand">
+		@* Fix for rendering in Visual Editor *@
+		@if (Pageview.IsVisualEditorMode) {
+			<div style="height: 120px"></div>
+		}
+
+        <main id="content">
+            @inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
+
+<style>
+	.badge-option {
+		border-radius: 2px;
+		padding: 0.5em;
+	}
+</style>
+
+
+
+<div class="container my-5">
+	<div class="grid gap-3 mb-5 pb-3 text-center border-bottom">
+		<div class="g-col-12">
+			<h1 class="h1">@Translate("Ecommerce badges") </h1>
+		</div>
+	</div>
+	<div class="grid gap-3">
+		@Model.Placeholder("content", "content", "default:true;sort:1")
+	</div>
+</div>
+
+@{
+	string tmpPath = Dynamicweb.Context.Current.Server.MapPath($"/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_ecommerce_badge_styles_{Model.Area.ID}.tmp");
+	string cssPathEcommerceBadges = Dynamicweb.Context.Current.Server.MapPath($"/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_ecommerce_badge_styles_{Model.Area.ID}.css");
+	string cssPathTheme = Dynamicweb.Context.Current.Server.MapPath($"/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_theme_styles_{Model.Area.ID}.css");
+	string cssPathBranding = Dynamicweb.Context.Current.Server.MapPath($"/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_branding_styles_{Model.Area.ID}.css");
+	string cssPathCombined = Dynamicweb.Context.Current.Server.MapPath($"/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_styles_{Model.Area.ID}.min.css");
+
+	Dynamicweb.Core.Helpers.TextFileHelper.WriteTextFile(Dynamicweb.Core.Helpers.TextFileHelper.ReadTextFile(tmpPath), cssPathEcommerceBadges, false);
+	System.IO.File.Delete(tmpPath);
+
+	string combinedCss = Dynamicweb.Core.Helpers.TextFileHelper.ReadTextFile(cssPathBranding);
+	combinedCss += Dynamicweb.Core.Helpers.TextFileHelper.ReadTextFile(cssPathTheme);
+	combinedCss += Dynamicweb.Core.Helpers.TextFileHelper.ReadTextFile(cssPathEcommerceBadges);
+	combinedCss = System.Text.RegularExpressions.Regex.Replace(combinedCss, "\\s+(?=((\\\\[\\\\\"]|[^\\\\\"])*\"(\\\\[\\\\\"]|[^\\\\\"])*\")*(\\\\[\\\\\"]|[^\\\\\"])*$)", ""); //minify the css.
+	Dynamicweb.Core.Helpers.TextFileHelper.WriteTextFile(combinedCss, cssPathCombined, false);
+}
+
+        </main>
+    
+        @* Render any offcanvas menu here *@
+		@RenderSnippet("offcanvas")
+    </body>
+
+</html>

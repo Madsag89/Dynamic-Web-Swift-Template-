@@ -77,4 +77,13 @@
     <FormatLine Mode="Edit">{city}, {region} {zip}</FormatLine>
     <FormatLine>{country}</FormatLine>
   </Format>
+  <Format countryCode="CA">
+    <FormatLine>{firstName} {lastName}</FormatLine>
+    <FormatLine>{company}</FormatLine>
+    <FormatLine>{address1}</FormatLine>
+    <FormatLine>{address2}</FormatLine>
+    <FormatLine Mode="Display">{city}, {regioncode} {zip}</FormatLine>
+    <FormatLine Mode="Edit">{city}, {region} {zip}</FormatLine>
+    <FormatLine>{country}</FormatLine>
+  </Format>
 </AddressFormats>

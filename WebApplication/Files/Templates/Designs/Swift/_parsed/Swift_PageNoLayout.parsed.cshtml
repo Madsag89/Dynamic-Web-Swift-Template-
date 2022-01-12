@@ -1,0 +1,161 @@
+﻿@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
+@using Dynamicweb
+
+@{ 
+	@* Branding Themes Fonts *@
+	var brandingPageId = Model.Area.Item.GetLink("BrandingPage") != null ? Model.Area.Item.GetLink("BrandingPage").PageId : 0;
+	var themePageId = Model.Area.Item.GetLink("ThemesPage") != null ? Model.Area.Item.GetLink("ThemesPage").PageId : 0;
+
+	var brandingPage = Dynamicweb.Services.Pages?.GetPage(brandingPageId) ?? null;
+	var themesParagraphLastChanged = Services.Paragraphs.GetParagraphsByPageId(themePageId).OrderByDescending(p => p.Audit.LastModifiedAt).FirstOrDefault();
+	var cssLastModified = brandingPage.Audit.LastModifiedAt > themesParagraphLastChanged.Audit.LastModifiedAt ? brandingPage.Audit.LastModifiedAt : themesParagraphLastChanged.Audit.LastModifiedAt;
+
+	var cssStyleFileInfo = new System.IO.FileInfo(Dynamicweb.Core.SystemInformation.MapPath("~/Files/Templates/Designs/Swift/Assets/css/styles.css"));
+	var jsFileInfo = new System.IO.FileInfo(Dynamicweb.Core.SystemInformation.MapPath("~/Files/Templates/Designs/Swift/Assets/js/scripts.js"));
+}
+
+<!doctype html>
+<html lang="@Pageview.Area.CultureInfo.TwoLetterISOLanguageName">
+
+    <head>
+        @* Required meta tags *@
+		<meta charset="utf-8">
+		<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0">
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/css/styles.css?@cssStyleFileInfo.LastWriteTime.Ticks" as="style">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/tiny-slider.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/plyr.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/aos.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/flatpickr.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+		<link rel="preload" href="~/Files/Templates/Designs/Swift/Assets/js/scripts.js?@jsFileInfo.LastWriteTime.Ticks" as="script">
+
+		<link rel="shortcut icon" href="~/Files/Templates/Designs/Swift/Assets/Images/favicon.png" />
+		<link rel="apple-touch-icon" href="~/Files/Templates/Designs/Swift/Assets/Images/logo_transparent.png" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta name="googlebot-news" content="nosnippet">
+
+		@Model.MetaTags
+
+		<title>@Model.Title</title>
+
+
+		@* Bootstrap + Swift stylesheet *@
+		<link href="~/Files/Templates/Designs/Swift/Assets/css/styles.css?@cssStyleFileInfo.LastWriteTime.Ticks" rel="stylesheet" media="all" type="text/css">
+
+		@* Branding and Themes min stylesheet *@
+		<link href="~/Files/Templates/Designs/Swift/_parsed/Swift_css/Swift_styles_@(Model.Area.ID).min.css?@cssLastModified.Ticks" rel="stylesheet" media="all" type="text/css" data-last-modified-content="@cssLastModified">
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/tiny-slider.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/plyr.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/aos.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/flatpickr.js?@jsFileInfo.LastWriteTime.Ticks" defer></script>
+		<script src="~/Files/Templates/Designs/Swift/Assets/js/scripts.js?@jsFileInfo.LastWriteTime.Ticks" async></script>
+	</head>
+
+    <body class="brand">
+		@* Fix for rendering in Visual Editor *@
+		@if (Pageview.IsVisualEditorMode) {
+			<div style="height: 120px"></div>
+		}
+
+        <main id="content">
+            @inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
+@using System
+@using Dynamicweb.Ecommerce.ProductCatalog
+
+@{
+	string theme = "";
+	string gridContent = "";
+
+	if (Model.PropertyItem != null)
+	{
+		theme = !string.IsNullOrWhiteSpace(Model.PropertyItem.GetRawValueString("Theme")) ? " theme " + Model.PropertyItem.GetRawValueString("Theme").Replace(" ", "").Trim().ToLower() : "";
+	}
+
+	if (Model.Item != null)
+	{
+		gridContent = Model.Grid("Grid", "Grid", "default:true;sort:1", "Page");
+	}
+
+	bool doNotRenderPage = false;
+
+	//Check if we are on the poduct detail page, and if there is data to render
+	ProductViewModel product = new ProductViewModel();
+	if (Dynamicweb.Context.Current.Items.Contains("ProductDetails"))
+	{
+		product = (ProductViewModel)Dynamicweb.Context.Current.Items["ProductDetails"];
+		if (string.IsNullOrEmpty(product.Id))
+		{
+			doNotRenderPage = true;
+		}
+	}
+
+	//Render the page
+	if (!doNotRenderPage)
+	{
+		if (theme != "")
+		{
+			<div class="@theme">
+				@gridContent
+			</div>
+		}
+		else
+		{
+			@gridContent
+		}
+	}
+	else
+	{
+		<div class="container">
+			<div class="alert alert-info" role="alert">@Translate("Sorry. There is nothing to view here")</div>
+		</div>
+	}
+
+	if (!Model.IsCurrentUserAllowed)
+	{
+		int signInPage = GetPageIdByNavigationTag("SignInPage");
+		int dashboardPage = GetPageIdByNavigationTag("MyAccountDashboardPage");
+
+		if (!Pageview.IsVisualEditorMode)
+		{
+			if (signInPage != 0)
+			{
+				if (signInPage != Model.ID)
+				{
+					Dynamicweb.Context.Current.Response.Redirect("/Default.aspx?ID=" + signInPage);
+				}
+				else
+				{
+					if (dashboardPage != 0)
+					{
+						Dynamicweb.Context.Current.Response.Redirect("/Default.aspx?ID=" + dashboardPage);
+					}
+					else
+					{
+						Dynamicweb.Context.Current.Response.Redirect("/");
+					}
+				}
+			}
+			else
+			{
+				<div class="alert alert-dark m-0" role="alert">
+					<span>@Translate("You do not have access to this page")</span>
+				</div>
+			}
+		}
+		else
+		{
+			<div class="alert alert-dark m-0" role="alert">
+				<span>@Translate("To work on this page, you must be signed in, in the frontend")</span>
+			</div>
+		}
+	}
+}
+
+        </main>
+    
+        @* Render any offcanvas menu here *@
+		@RenderSnippet("offcanvas")
+    </body>
+
+</html>
