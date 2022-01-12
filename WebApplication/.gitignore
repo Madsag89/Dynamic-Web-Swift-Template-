@@ -1,0 +1,73 @@
+# DYNAMICWEB
+2## FILES
+3CHANGELOG.txt
+4DW_ReadMe.txt
+5dynamicweb.web.config
+6Language.db
+7LICENSE.txt
+8README.txt
+9UpgradeLog*
+10*.license
+11**/System/EventNotifications/*_SentTime
+12**/FilesMetadata.txt
+13**/Files/updatelog.log
+14**/Files/System/Repositories/FilesMetadata.txt
+15**/WebsiteLayouts*.*
+16 
+17## FOLDERS
+18**/Files/cache.net/*
+19**/App_Data/Cache/
+20**/Deployment/Packages
+21**/System/Deployment/Packages/
+22**/System/Diagnostics/*
+23**/System/Log/
+24**/System/Indexes/
+25**/_parsed
+26**/Files/Images/*
+27 
+28## DW/Swift specific
+29**/Files/**/Log/
+30**/Files/**/EventNotifications/
+31**/Files/**/UpdateVersion_ecom.xml
+32**/Files/**/update.xml
+33**/Files/System/Log
+34**/Files/System/Diagnostics
+35**/Files/System/Items/Translations.xml
+36**/Files/System/Indexes/*
+37**/Files/Templates/Designs/Swift/Assets/*
+38**/Files/System/Indexes
+39node_modules
+40build
+41.cache
+42npm-debug.log.*
+43
+44## DW/Swift Whitelist
+45!**/GlobalSettings.config
+46!**/Files/System/Repositories/
+47!**/Files/System/SmartSearches/
+48!**/Files/System/Integration/
+49!**/Files/System/Items/
+50!**/Files/Templates/Designs/Swift/Assets/_src/
+51!**/Files/Templates/Designs/Swift/Assets/css/
+52!**/Files/Templates/Designs/Swift/Assets/js/
+53!**/Files/Templates/Designs/Swift/Assets/icons/
+54!**/Files/Templates/Designs/Swift/Assets/Images/
+55 
+56# VISUAL STUDIO
+57## FILES
+58*.tmp
+59*.orig
+60*.user
+61.vs
+62.vscode
+63.idea
+64 
+65## FOLDERS
+66/packages/
+67**/obj
+68**/Log
+69**/bin/*
+70/.idea/*
+71 
+72## Admin
+73!**/Admin/**

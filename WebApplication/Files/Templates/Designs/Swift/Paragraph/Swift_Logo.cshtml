@@ -1,0 +1,60 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+@using System.IO
+
+@{
+	Dynamicweb.Frontend.LinkViewModel logoLink = Model.Item.GetLink("Link");
+	string horizontalAlign = !string.IsNullOrEmpty(Model.Item.GetRawValueString("HorizontalAlignment")) ? "justify-content-" + Model.Item.GetRawValueString("HorizontalAlignment") : "";
+
+	string contentPadding = Model.Item.GetRawValueString("ContentPadding", "px-3 py-2");
+	contentPadding = contentPadding == "none" ? "p-0" : contentPadding;
+	contentPadding = contentPadding == "small" ? "px-3 py-2" : contentPadding;
+	contentPadding = contentPadding == "large" ? "px-4 py-3" : contentPadding;
+
+	string theme = !string.IsNullOrWhiteSpace(Model.Item.GetRawValueString("Theme")) ? " theme " + Model.Item.GetRawValueString("Theme").Replace(" ", "").Trim().ToLower() : "";
+	string title = !string.IsNullOrEmpty(Model.Item.GetString("LogoName")) ? Model.Item.GetString("LogoName") : "";
+}
+
+<figure class="m-0 d-flex @(horizontalAlign)@(theme)">
+	@if (logoLink != null) { 
+        <a href="@logoLink.Url" class="text-decoration-none" aria-label="@title">
+			@RenderLogo()
+		</a>
+	}
+	else
+	{
+		@RenderLogo()
+	}
+</figure>
+
+@helper RenderLogo()
+{
+	string logoImage = Model?.Item?.GetFile("Image")?.Path != null ? Model.Item.GetFile("Image").Path : "";
+	string logoWidth = !string.IsNullOrEmpty(Model.Item.GetString("LogoWidth")) ? "width: " + Model.Item.GetInt32("LogoWidth") + "px" : "";
+	logoWidth = logoWidth == "width: 0px" ? "" : logoWidth;
+
+	if (logoImage != "")
+	{
+		string title = !string.IsNullOrEmpty(Model.Item.GetString("LogoName")) ? Model.Item.GetString("LogoName") : "";
+
+		if (Path.GetExtension(logoImage).ToLower() == ".svg")
+		{
+			<div class="icon-auto" style="@logoWidth">
+				@ReadFile(logoImage)
+			</div>
+		}
+		else
+		{
+			int imageWidth = !string.IsNullOrEmpty(Model.Item.GetString("LogoWidth")) ? Model.Item.GetInt32("LogoWidth") : 500;
+			string imagePath = "/Admin/Public/GetImage.ashx?width=" + imageWidth + "&image=" + logoImage;
+
+			<picture class="mx-auto d-block">
+				<img src="@logoImage" alt="@title" style="@logoWidth" />
+			</picture>
+		}
+	}
+	else
+	{
+		string title = !string.IsNullOrEmpty(Model.Item.GetString("LogoName")) ? Model.Item.GetString("LogoName") : "Swift";
+		<span class="fs-4">@title</span>
+	}
+}

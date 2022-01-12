@@ -1,0 +1,29 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+
+@{
+	string ratio = Model.Item.GetRawValueString("ImageAspectRatio") != string.Empty ? Model.Item.GetRawValueString("ImageAspectRatio") : string.Empty;
+	string ratioCssClass = ratio != "0" && ratio != "fill" ? " ratio" : string.Empty;
+	string ratioVariable = ratio != "0" && ratio != "fill" ? "style=\"--bs-aspect-ratio: " + ratio + "\"" : string.Empty;
+	string fillClass = ratio == "fill" ? " h-100" : string.Empty;
+
+	var parms = new Dictionary<string, object>();
+	parms.Add("loading", "lazy");
+	parms.Add("columns", Model.GridRowColumnCount);
+	parms.Add("style", "");
+	parms.Add("alt", Model.Item.GetString("ImageAltText"));
+
+	if (ratio == "fill") {
+		parms.Add("cssClass", "w-100 h-100");
+	}
+	if (ratio == "0")
+	{
+		parms.Add("fullwidth", true);
+		parms.Add("cssClass", "img-fluid");
+	}
+}
+
+@if (!string.IsNullOrEmpty(Model.Item.GetString("Image"))) {
+	<figure class="m-0@(ratioCssClass)@(fillClass)" @ratioVariable>
+		@RenderPartial("Components/Image.cshtml", Model.Item.GetFile("Image") ?? new Dynamicweb.Frontend.FileViewModel(), parms)
+	</figure>
+}

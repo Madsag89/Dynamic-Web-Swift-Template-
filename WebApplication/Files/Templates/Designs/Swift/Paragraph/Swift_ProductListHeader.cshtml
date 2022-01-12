@@ -1,0 +1,69 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+@using Dynamicweb.Frontend.Navigation
+@using Dynamicweb.Ecommerce.ProductCatalog
+@using Dynamicweb.Environment
+
+@{
+	string searchParameter = Dynamicweb.Context.Current.Request.GetString("q");
+
+	ProductListViewModel productList = new ProductListViewModel();
+
+	if (Dynamicweb.Context.Current.Items.Contains("ProductList"))
+	{
+		productList = (ProductListViewModel)Dynamicweb.Context.Current.Items["ProductList"];
+	}
+
+	string titleFontSize = Model.Item.GetRawValueString("TitleFontSize", "display-4");
+
+	var navigationSettings = new NavigationSettings();
+	navigationSettings.StartLevel = 2;
+	navigationSettings.ExpandMode = ExpandMode.Path;
+	navigationSettings.Parameters.Add("TitleFontSize", titleFontSize);
+
+	string breadcrumbContent = Navigation.RenderNavigation("Navigation/ProductGroupHeader.cshtml", navigationSettings);
+	breadcrumbContent = searchParameter != "" ? "<h1 class=\"" + titleFontSize + "\">" + Translate("Search results for") + ": " + searchParameter + "</h1>" : breadcrumbContent;
+
+	@* if we're on a search result page, set the search term as the Meta Title *@
+	if (!string.IsNullOrEmpty(searchParameter))
+	{
+		Dynamicweb.Frontend.PageView.Current().Meta.Title = Translate("Search results for") + ": " + searchParameter;
+	}
+
+	string layout = Model.Item.GetRawValueString("Layout", "text-start");
+
+	string contentPadding = Model.Item.GetRawValueString("ContentPadding", "");
+	contentPadding = contentPadding == "none" ? "p-0" : contentPadding;
+	contentPadding = contentPadding == "small" ? "p-2 p-md-3" : contentPadding;
+	contentPadding = contentPadding == "large" ? "p-4 p-md-5" : contentPadding;
+
+	string theme = !string.IsNullOrWhiteSpace(Model.Item.GetRawValueString("Theme")) ? " theme " + Model.Item.GetRawValueString("Theme").Replace(" ", "").Trim().ToLower() : "";
+}
+
+<div class="@(contentPadding)@(theme)">
+	@if (!string.IsNullOrEmpty(breadcrumbContent))
+	{
+		<div class="grid gap-0">
+			@if (layout == "text-start") {
+				<div class="g-col-12 g-col-lg-9">
+					@breadcrumbContent
+				</div>
+				<div class="g-col-12 g-col-lg-3 text-lg-end mb-3 mb-lg-0">
+					@productList.TotalProductsCount @Translate("products")
+				</div>
+			} else {
+				<div class="g-col-12 text-center d-flex flex-column align-items-center">
+					@breadcrumbContent
+				</div>
+				<div class="g-col-12 text-center mb-3">
+					@productList.TotalProductsCount @Translate("products")
+				</div>
+			}
+		</div>
+	}
+	else if (Pageview.IsVisualEditorMode)
+	{
+		<div class="alert alert-dark m-0" role="alert">
+			<span>@Translate("Product list header: The header will be shown here, if any")</span>
+		</div>
+	}
+</div>

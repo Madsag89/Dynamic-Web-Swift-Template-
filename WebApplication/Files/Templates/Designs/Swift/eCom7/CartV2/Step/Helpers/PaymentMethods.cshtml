@@ -1,0 +1,37 @@
+@helper RenderPaymentMethods()
+{
+	<div class="list-group">
+		@foreach (LoopItem method in GetLoop("Paymethods")) {
+			<label class="list-group-item list-group-item-action py-3">
+				<dl class="grid gap-1 gap-sm-3 mb-0">
+					<dt class="g-col-8 g-col-sm-4 fw-normal">
+						<div class="form-check">
+							@{
+								string paymentMethodId = GetString("Ecom:Order.PaymentMethodID");
+								string paymentMethodIdSaved = method.GetString("Ecom:Cart.Paymethod.ID");
+							}
+							<input class="form-check-input" type="radio" name="EcomCartPaymethodID" id="EcomCartPaymentmethodID_@method.GetString("Ecom:Cart.Paymethod.ID")" @if (String.Equals(paymentMethodId, paymentMethodIdSaved)) {<text>checked="checked"</text>} value="@method.GetString("Ecom:Cart.Paymethod.ID")" onChange="submitForm()">
+							<span class="form-check-label">@method.GetString("Ecom:Cart.Paymethod.Name")</span>
+						</div>
+					</dt>
+					<dd class="g-col-12 g-col-sm-7 order-2 order-sm-1 mb-0">
+						@{
+							string imagePath = Dynamicweb.Context.Current.Server.MapPath(method.GetString("Ecom:Cart.Paymethod.Icon.Clean"));
+
+							if (File.Exists(imagePath)) {
+								<span class="m-0 d-block" style="height: 1.5rem; width: 100%; background: url('@method.GetString("Ecom:Cart.Paymethod.Icon.Clean")') no-repeat left center; background-size: contain;"></span>
+							}
+							else {
+								<span class="fs-8 lh-1">@method.GetString("Ecom:Cart.Paymethod.Description")</span>
+							}
+						}
+
+					</dd>
+					<dd class="g-col-4 g-col-sm-1 order-1 order-sm-2 mb-0 text-end">
+						<span class="text-price">@method.GetString("Ecom:Cart.Paymethod.Price")</span>
+					</dd>
+				</dl>
+			</label>
+		}
+	</div>
+}

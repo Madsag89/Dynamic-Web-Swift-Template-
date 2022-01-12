@@ -1,0 +1,9 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+@using Dynamicweb.Frontend.Navigation
+
+@{ 
+    var navigationSettings = new NavigationSettings();
+    navigationSettings.ExpandMode = ExpandMode.PathOnly;
+}
+
+@Navigation.RenderNavigation("Navigation/BreadcrumbNavigation.cshtml", navigationSettings)

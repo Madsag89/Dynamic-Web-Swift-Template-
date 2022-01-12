@@ -1,0 +1,152 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+@using System.IO
+
+@{
+	string layout = Model.Item.GetRawValueString("Layout", "icon-top");
+	string contentPadding = Model.Item.GetRawValueString("ContentPadding", "");
+	contentPadding = contentPadding == "none" ? "" : contentPadding;
+	contentPadding = contentPadding == "small" ? "p-3 p-md-3" : contentPadding;
+	contentPadding = contentPadding == "large" ? "p-5 p-md-5" : contentPadding;
+	string theme = !string.IsNullOrWhiteSpace(Model.Item.GetRawValueString("Theme")) ? " theme " + Model.Item.GetRawValueString("Theme").Replace(" ", "").Trim().ToLower() : "";
+}
+
+<div class="h-100 @(contentPadding)@(theme)">
+	@switch (layout)
+	{
+		case "icon-top":
+			if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+			{
+				@:<a href="@Model.Item.GetString("Link")" class="text-decoration-none d-block h-100">
+				}
+
+				<div class="d-flex flex-column gap-3 text-center mb-0-last-child">
+					<div>
+						@RenderIconAndImage()	
+					</div>
+
+					@if (
+						!string.IsNullOrEmpty(Model.Item.GetString("Title")) &&
+						!Model.Item.GetBoolean("HideTitle") ||
+						!string.IsNullOrEmpty(Model.Item.GetString("Text"))
+						)
+					{
+						<div class="mb-0-last-child">
+							@RenderTitle()
+							@RenderBody()
+						</div>
+					}
+
+				</div>
+
+				if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+				{
+				@:</a>
+			}
+			break;
+		case "icon-left":
+			if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+			{
+				@:<a href="@Model.Item.GetString("Link")" class="text-decoration-none d-block h-100">
+				}
+
+				<div class="d-flex flex-row align-items-stretch gap-3 h-100 text-start">
+					<div class="flex-grow-0">
+						@RenderIconAndImage()
+					</div>
+
+					@if (
+						!string.IsNullOrEmpty(Model.Item.GetString("Title")) &&
+						!Model.Item.GetBoolean("HideTitle") ||
+						!string.IsNullOrEmpty(Model.Item.GetString("Text"))
+						)
+					{
+						<div class="d-flex flex-column flex-grow-1 gap-3">
+							@RenderTitle()
+							@RenderBody()
+						</div>
+					}
+
+				</div>
+
+				if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+				{
+				@:</a>
+			}
+			break;
+		case "icon-right":
+			if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+			{
+				@:<a href="@Model.Item.GetString("Link")" class="text-decoration-none d-block h-100">
+				}
+
+				<div class="d-flex flex-row align-items-stretch gap-3 h-100 text-end">
+					<div class="d-flex flex-column flex-grow-1 gap-3">
+						@RenderTitle()
+						@RenderBody()
+					</div>
+
+					<div class="flex-grow-0">
+						@RenderIconAndImage()
+					</div>
+				</div>
+				if (!string.IsNullOrEmpty(Model.Item.GetString("Link")))
+				{
+				@:</a>
+			}
+			break;
+	}
+</div>
+
+@helper RenderIconAndImage()
+{
+	string iconSize = Model.Item.GetRawValueString("IconSize", "2");
+	string imageSrc = !string.IsNullOrEmpty(Model.Item.GetString("Image")) ? Model.Item.GetFile("Image").Path : "";
+
+	if (!string.IsNullOrEmpty(Model.Item.GetString("Image")))
+	{
+		@RenderIcon(imageSrc, iconSize)
+	}
+	else
+	{
+		string imagePath = Model.Item.GetRawValueString("Icon", "");
+
+		if (!imagePath.ToLower().Contains("none") && imagePath != "")
+		{
+			@RenderIcon(imagePath, iconSize)
+		}
+	}
+}
+
+@helper RenderIcon(string imagePath, string iconSize)
+{
+	if (Path.GetExtension(imagePath).ToLower() == ".svg")
+	{
+		<div class="icon-auto" style="height: @(iconSize)px; width: @(iconSize)px;">
+			@ReadFile(imagePath)
+		</div>
+	}
+	else
+	{
+		imagePath = "/Admin/Public/GetImage.ashx?image=" + imagePath + "&height=" + iconSize + "&width=" + iconSize + "&Crop=0&Format=WebP&Quality=100";
+
+		<img loading="lazy" src="@imagePath" title="@Model.Item.GetString("Title")" style="height: @(iconSize)px; width: @(iconSize)px;">
+	}
+}
+
+@helper RenderTitle()
+{
+	string titleFontSize = Model.Item.GetRawValueString("TitleFontSize", "h4");
+
+	if (!string.IsNullOrEmpty(Model.Item.GetString("Title")) && !Model.Item.GetBoolean("HideTitle"))
+	{
+		<h2 class="@titleFontSize m-0">@Model.Item.GetString("Title")</h2>
+	}
+}
+
+@helper RenderBody()
+{
+	if (!string.IsNullOrEmpty(Model.Item.GetString("Text")))
+	{
+		<p class="m-0">@Model.Item.GetString("Text")</p>
+	}
+}

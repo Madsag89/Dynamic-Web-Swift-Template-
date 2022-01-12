@@ -1,0 +1,119 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+@{
+	string layout = Model.Item.GetRawValueString("Layout", "field");
+	string horizontalAlign = !string.IsNullOrEmpty(Model.Item.GetRawValueString("HorizontalAlignment")) ? " justify-content-" + Model.Item.GetRawValueString("HorizontalAlignment") : "";
+	string paragraphId = Model.ID.ToString();
+
+	string searchLayout = Model.Item.GetRawValueString("Layout", "");
+	searchLayout = searchLayout == "icon" ? "mx-n3" : searchLayout;
+}
+
+<div class="d-flex align-items-center h-100 my-auto search-modal @searchLayout@(horizontalAlign)">
+	@if (layout == "field")
+	{
+		@SearchField("normal")
+	}
+
+	@if (layout == "small-field")
+	{
+		@SearchField("small")
+	}
+
+	@if (layout == "icon")
+	{
+		string iconPath = "/Files/Templates/Designs/Swift/Assets/icons/";
+
+		<button class="btn px-3 py-2 search-icon" data-bs-toggle="modal" data-bs-target="#searchModal_@paragraphId">
+			<span class="icon-3">
+				@ReadFile(iconPath + "search.svg")
+			</span>
+		</button>
+
+		<div class="modal fade" id="searchModal_@paragraphId" tabindex="-1" data-bs-backdrop="false">
+			<div class="modal-dialog modal-fullscreen">
+				<div class="modal-content">
+					<div class="modal-header justify-content-between">
+						<h5 class="modal-title">@Translate("Search")</h5>
+						<a data-bs-dismiss="modal" aria-label="Close">
+							<span class="icon-3">
+								@ReadFile(iconPath + "x.svg")
+							</span>
+						</a>
+					</div>
+					<div class="modal-body">
+						@SearchField("normal")
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+@helper SearchField(string size)
+{
+	string paragraphId = Model.ID.ToString();
+	string searchResultsPageId = Model.Item.GetRawValueString("SearchResultsPage", "0");
+	Dynamicweb.Frontend.LinkViewModel productListPage = Model.Item.GetLink("ProductListPage");
+	Dynamicweb.Frontend.LinkViewModel productDetailsPage = Model.Item.GetLink("ProductDetailsPage");
+	string productListPageUrl = productListPage?.Url;
+	string productDetailsPageUrl = productDetailsPage?.Url;
+
+	string width = size == "small" ? "style=\"width: 260px\"" : "style=\"width: 100%\"";
+	string iconPath = "/Files/Templates/Designs/Swift/Assets/icons/";
+
+	string searchTerm = string.Empty;
+	if (!string.IsNullOrEmpty(Dynamicweb.Context.Current.Request["q"]))
+	{
+		searchTerm = Dynamicweb.Context.Current.Request["q"];
+
+	}
+	string groupIdQueryParameter = string.Empty;
+	if (!string.IsNullOrEmpty(Dynamicweb.Context.Current.Request["GroupID"]))
+	{
+		groupIdQueryParameter = "&GroupID=" + Dynamicweb.Context.Current.Request["GroupID"].Trim();
+	}
+
+	string layout = Model.Item.GetRawValueString("Layout", "field");
+
+	<div class="js-async-fetch-placeholder" @width>
+		<div class="dropdown js-type-ahead-dropdown type-ahead-dropdown">
+			<form method="get"
+				  action="@productListPageUrl"
+				  data-search-results-page="@searchResultsPageId"
+				  data-product-details-page="@productDetailsPageUrl"
+				  data-product-list-page="@productListPageUrl"
+				  data-search-layout="@(layout)"
+				  class="js-suggest-form suggest-form">
+
+				<input type="hidden" class="js-type-ahead-parameter" />
+				<input type="hidden" name="SearchLayout" value="@(layout)" />
+
+				<label for="searchField_@paragraphId" class="visually-hidden">@Translate("Search here")</label>
+
+				<span class="position-absolute top-0 icon-2 px-3 d-flex align-items-center h-100 search-icon">
+					@ReadFile(iconPath + "search.svg")
+				</span>
+
+				<input id="searchField_@paragraphId"
+					   class="form-control js-type-ahead-field type-ahead-field py-2 ps-5 pe-3"
+					   type="search"
+					   placeholder="@Translate("Search here")"
+					   autocomplete="off"
+					   maxlength="255"
+					   name="q"
+					   value="@searchTerm"
+					   data-original="@searchTerm"
+					   onfocus="swift.Typeahead.init()">
+
+				<button type="button"
+						onclick="var f = document.getElementById('searchField_@paragraphId'); f.value = ''; f.focus();"
+						class="btn h-100 icon-2 reset-search"
+						aria-label="@Translate("Clear search")"
+						style="opacity: 0; position: absolute; top: 0; right: 0; visibility: hidden;">
+					@ReadFile(iconPath + "x.svg")
+				</button>
+			</form>
+			<ul class="dropdown-menu w-100 js-type-ahead-menu type-ahead-menu"></ul>
+		</div>
+	</div>
+}

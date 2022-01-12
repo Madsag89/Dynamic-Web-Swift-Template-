@@ -1,0 +1,91 @@
+@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.ParagraphViewModel>
+
+@{ 
+	string listSource = !string.IsNullOrEmpty(Model.Item.GetString("ListSource")) ? Model.Item.GetString("ListSource") : Model.PageID.ToString();
+	string articleListSortOrder = !string.IsNullOrEmpty(Model.Item.GetString("ArticleListSortOrder")) ? Model.Item.GetString("ArticleListSortOrder") : "Descending";
+	int maxItemsInList = !string.IsNullOrEmpty(Model.Item.GetInt32("MaxItemsInList").ToString()) ? Model.Item.GetInt32("MaxItemsInList") : 10;
+	string articleListLayout = !string.IsNullOrEmpty(Model.Item.GetString("ArticleListLayout")) ? Model.Item.GetString("ArticleListLayout") : "grid";
+	string columnTheme = !string.IsNullOrEmpty(Model.Item.GetString("ColumnTheme")) ? Model.Item.GetString("ColumnTheme") : string.Empty;
+	string columnThemeClass = columnTheme != string.Empty ? " theme " + columnTheme + " p-3" + (articleListLayout == "carousel" ? " px-lg-4" : string.Empty) : string.Empty;
+	int gridSettings = !string.IsNullOrEmpty(Model.Item.GetInt32("GridSettings").ToString()) ? Model.Item.GetInt32("GridSettings") : 4;
+	int carouselSettings = !string.IsNullOrEmpty(Model.Item.GetInt32("CarouselSettings").ToString()) ? Model.Item.GetInt32("CarouselSettings") : 4;
+	string settingsClassGrid = string.Empty;
+	string settingsClassCarousel = string.Empty;
+	bool enableSlider = maxItemsInList > carouselSettings;
+
+	switch (gridSettings)
+	{
+		case 2:
+			settingsClassGrid = " grid-md-2";
+			break;
+		case 3:
+			settingsClassGrid = " grid-md-3";
+			break;
+		case 4:
+			settingsClassGrid = " grid-md-2 grid-lg-3 grid-xl-4";
+			break;
+		case 5:
+			settingsClassGrid = " grid-md-2 grid-lg-3 grid-xl-5";
+			break;
+	}
+	switch (carouselSettings)
+	{
+		case 2:
+			settingsClassCarousel = " slider-item-show2";
+			break;
+		case 3:
+			settingsClassCarousel = " slider-item-show3";
+			break;
+		case 4:
+			settingsClassCarousel = " slider-item-show4";
+			break;
+		case 5:
+			settingsClassCarousel = " slider-item-show5";
+			break;
+	}
+
+	switch (articleListLayout)
+	{
+		case "grid":
+			<div class="grid gap-md-4 grid-1@(settingsClassGrid)@(columnThemeClass)">
+				@RenderArticleList("Swift_Article", listSource, maxItemsInList, articleListSortOrder)
+				@RenderArticleList("Swift_ArticleListPage", listSource, maxItemsInList, articleListSortOrder)
+			</div>
+			break;
+
+		case "carousel":
+			<div class="swiffy-slider slider-item-reveal slider-nav-round slider-item-nosnap swiffy-gap-lg-4@(settingsClassCarousel)@(columnThemeClass)">
+				<div class="slider-container slider-nav-scrollbar pb-3 py-lg-3">
+					@RenderArticleList("Swift_Article", listSource, maxItemsInList, articleListSortOrder)
+					@RenderArticleList("Swift_ArticleListPage", listSource, maxItemsInList, articleListSortOrder)
+				</div>
+
+				<button type="button" title="@Translate("Slider navigation button - Previous slider")" class="slider-nav"></button>
+				<button type="button" title="@Translate("Slider navigation button - Next slider")" class="slider-nav slider-nav-next"></button>
+
+				<script type="module" src="~/Files/Templates/Designs/Swift/Assets/js/swiffy-slider.js"></script>
+				<script type="module">
+					swiffyslider.init()
+				</script>
+			</div>
+			break;
+
+	}
+}
+
+@helper RenderArticleList(string itemType, string listSource, int maxItemsInList, string articleListSortOrder)
+{
+	@RenderItemList(new
+	{
+		ItemType = itemType,
+		ListTemplate = "ItemPublisher/List/List.cshtml",
+		ItemFieldsList = "*",
+		ListSourceType = "Page",
+		ListSourcePage = listSource,
+		ListPageSize = maxItemsInList,
+		IncludeParagraphItems = true,
+		ListOrderBy = "PublishedDate",
+		ListSecondOrderBy = "Updated",
+		ListOrderByDirection = articleListSortOrder
+	})
+}

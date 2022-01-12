@@ -1,0 +1,48 @@
+@inherits ViewModelTemplate<ProductViewModel>
+@using Dynamicweb.Rendering
+@using Dynamicweb.Ecommerce.ProductCatalog
+
+@{
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("og:image", Model.DefaultImage.Value);
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("og:image:alt", Model.Name);
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("og:description", string.IsNullOrEmpty(Model.MetaDescription) ? Model.Name : Model.MetaDescription);
+
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("twitter:image", Model.DefaultImage.Value);
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("twitter:image:alt", Model.Name);
+	Dynamicweb.Frontend.PageView.Current().Meta.AddTag("twitter:description", string.IsNullOrEmpty(Model.MetaDescription) ? Model.Name : Model.MetaDescription);
+}
+
+@{ 
+    if (Dynamicweb.Context.Current.Items.Contains("ProductDetails"))
+    {
+        Dynamicweb.Context.Current.Items["ProductDetails"] = Model;
+    } 
+    else 
+    {
+        Dynamicweb.Context.Current.Items.Add("ProductDetails", Model);
+    }
+}
+
+<script>
+    //Initialize the sliders
+    window.addEventListener('DOMContentLoaded', function (event) {
+        swift.Sliders.init();
+        swift.Video.init();
+    });
+</script>
+
+@* Favorite toast *@
+<div aria-live="polite" aria-atomic="true"> 
+	<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"> 
+		<div id="favoriteNotificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"> 
+			<div class="toast-header"> 
+				<strong class="me-auto">@Translate("Favorite list updated")</strong> 
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button> 
+			</div> 
+			<div class="toast-body d-flex gap-3"> 
+				<div id="favoriteNotificationToast_Image"></div> 
+				<div id="favoriteNotificationToast_Text"></div> 
+			</div> 
+		</div> 
+	</div> 
+</div> 
