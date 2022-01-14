@@ -10770,4 +10770,12 @@
     <translation culture="en-GB"><![CDATA[]]></translation>
     <translation culture="da-DK"><![CDATA[]]></translation>
   </key>
+  <key name="Missing image" DefaultValue="Missing image">
+    <translation culture="en-GB"><![CDATA[]]></translation>
+    <translation culture="da-DK"><![CDATA[]]></translation>
+  </key>
+  <key name="Focus outline" DefaultValue="Focus outline">
+    <translation culture="en-GB"><![CDATA[]]></translation>
+    <translation culture="da-DK"><![CDATA[]]></translation>
+  </key>
 </translations>

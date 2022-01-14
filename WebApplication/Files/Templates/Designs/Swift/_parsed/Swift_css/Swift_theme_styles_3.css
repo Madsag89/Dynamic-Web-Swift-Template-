@@ -148,3 +148,57 @@
 --swift-button-secondary-hover-foreground-color-rgb: 51,51,51;
 }
 
+.theme-new{
+--swift-foreground-color: #333;
+--swift-foreground-color-rgb: 333;
+--swift-background-color: #fff;
+--swift-background-color-rgb: fff;
+--swift-border-color: none;
+--swift-border-color-rgb: none;
+--swift-button-primary-background-color: #333;
+--swift-button-primary-background-color-rgb: 333;
+--swift-button-primary-foreground-color: #FFF;
+--swift-button-primary-foreground-color-rgb: FFF;
+--swift-button-primary-hover-background-color: hsl(0, 0%, 40%);
+--swift-button-primary-hover-background-color-rgb: hsl(0, 0%, 40%);
+--swift-button-primary-hover-foreground-color: #FFF;
+--swift-button-primary-hover-foreground-color-rgb: FFF;
+--swift-button-secondary-background-color: #CCC;
+--swift-button-secondary-background-color-rgb: CCC;
+--swift-button-secondary-foreground-color: #333;
+--swift-button-secondary-foreground-color-rgb: 333;
+--swift-button-secondary-hover-background-color: hsl(0, 0%, 85%);
+--swift-button-secondary-hover-background-color-rgb: hsl(0, 0%, 85%);
+--swift-button-secondary-hover-foreground-color: #333;
+--swift-button-secondary-hover-foreground-color-rgb: 333;
+--swift-a11y-outline-color: #cccccc;
+--swift-a11y-outline-color-rgb: 204,204,204;
+}
+
+.dynamic-header{
+--swift-foreground-color: #333333;
+--swift-foreground-color-rgb: 51,51,51;
+--swift-background-color: #FFFFFF;
+--swift-background-color-rgb: 255,255,255;
+--swift-border-color: none;
+--swift-border-color-rgb: none;
+--swift-button-primary-background-color: #333333;
+--swift-button-primary-background-color-rgb: 51,51,51;
+--swift-button-primary-foreground-color: #FFFFFF;
+--swift-button-primary-foreground-color-rgb: 255,255,255;
+--swift-button-primary-hover-background-color: hsl(0, 0%, 40%);
+--swift-button-primary-hover-background-color-rgb: hsl(0, 0%, 40%);
+--swift-button-primary-hover-foreground-color: #FFFFFF;
+--swift-button-primary-hover-foreground-color-rgb: 255,255,255;
+--swift-button-secondary-background-color: #CCCCCC;
+--swift-button-secondary-background-color-rgb: 204,204,204;
+--swift-button-secondary-foreground-color: #333333;
+--swift-button-secondary-foreground-color-rgb: 51,51,51;
+--swift-button-secondary-hover-background-color: hsl(0, 0%, 85%);
+--swift-button-secondary-hover-background-color-rgb: hsl(0, 0%, 85%);
+--swift-button-secondary-hover-foreground-color: #333333;
+--swift-button-secondary-hover-foreground-color-rgb: 51,51,51;
+--swift-a11y-outline-color: #CCCCCC;
+--swift-a11y-outline-color-rgb: 204,204,204;
+}
+

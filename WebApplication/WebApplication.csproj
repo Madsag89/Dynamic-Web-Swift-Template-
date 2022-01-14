@@ -6211,6 +6211,40 @@
     <Content Include="Admin\Areas\Admin\Views\Manager\Area.cshtml" />
     <Content Include="Admin\Areas\Admin\Views\Elements\DesignerEditor.vbhtml" />
     <Content Include="Admin\Areas\Admin\Views\Elements\Designer.vbhtml" />
+
+     <!-- Include Section -->
+    <Content Include="Files\System\**\*.*" />
+    <Content Include="Files\Templates\Designs\Swift\**\*.*" />
+    <Content Include="Files\Templates\*.config" />
+  <!-- /Include Section -->
+ 
+  <!-- Exclude Section -->
+    <!-- Swift Custom styles and script - make sure these are compiled during build and included in ContentsBeforeBuild section! -->
+    <Content Remove="Files\Templates\Designs\Swift\Assets\js\*" />
+    <Content Remove="Files\Templates\Designs\Swift\Assets\css\*" />
+    <!-- Default, placeholder images -->
+    <Content Include="Files\Images\logo-dynamicweb.png" />
+    <Content Include="Files\Images\missing_image.jpg" />
+    <Content Include="Files\Images\placeholder.gif" />
+    <!-- Presets json/dat/facets, needed on first deploy/setup, but must be exluded afterwards -->
+    <Content Remove="Files\System\Items\**\*.json" />
+    <Content Remove="Files\System\Items\**\*.dat" />
+    <Content Remove="Files\System\Repositories\**\*.facets" />
+    <!-- System generated -->
+    <Content Remove="Files\System\Log\**;Files\System\Indexes\**;Files\System\Diagnostics\**" />
+    <!-- System SmartSearches, these are mostly relavant for the customer and often made directly on production -->
+    <Content Remove="Files\System\SmartSearches\**" />
+    <!-- Misc -->
+    <Content Remove="**\_parsed\**" />
+    <!-- Translations.xml and GlobalSettings.aspx is needed on inital deploy/installment -->
+    <Content Remove="**\Translations.xml" />
+    <Content Remove="Files\GlobalSettings.aspx" />
+    <Content Remove="**\*.orig" />
+    <!-- We name items as their templates so WebsiteLayouts is not needed -->
+    <Content Remove="Files\System\Items\WebsiteLayouts_*.xml" />
+
+  
+
     <None Include="dynamicweb.web.config" />
     <None Include="Hunspellx64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -6354,5 +6388,18 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
+  <!- -->
+
+   <Target Name="ContentsBeforeBuild" AfterTargets="BeforeBuild">
+    <ItemGroup>
+      <Content Include="Admin\**\*.*" />
+      <!--
+        Swift specific - Remove these from non-Swift projects
+        Including minified files AFTER they are compiled
+      -->
+      <Content Include="Files\Templates\Designs\Swift\Assets\js\*.*" />
+      <Content Include="Files\Templates\Designs\Swift\Assets\css\*.*" />
+    </ItemGroup>
+  </Target>
+
 </Project>

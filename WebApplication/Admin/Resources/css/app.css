@@ -602,9 +602,11 @@ a.bg-danger:focus {
   background-color: #e4b9b9;
 }
 .page-header {
-  padding-bottom: 8px;
-  margin: 36px 0 18px;
-  border-bottom: 1px solid #eeeeee;
+    padding-bottom: 8px;
+    margin: 36px 0 18px;
+    border-bottom: 1px solid #eeeeee;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.2);
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.2);
 }
 ul,
 ol {

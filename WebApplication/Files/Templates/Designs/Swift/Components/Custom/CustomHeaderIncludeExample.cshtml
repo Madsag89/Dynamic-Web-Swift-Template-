@@ -1,4 +1,4 @@
-@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
+﻿@inherits Dynamicweb.Rendering.ViewModelTemplate<Dynamicweb.Frontend.PageViewModel>
 
 @*
 	WARNING: All this code that prints out ugly things is in here so you do not accidently include this custom code to the solution.
@@ -23,8 +23,7 @@
 	var page = Dynamicweb.Services.Pages.GetPage(currentPageid);
 	var pagename = page.MenuText;
 }
-<h1>This comes from your custom header file</h1>
-<h2>This page has the name: @pagename</h2>
+
 @{
 	//Check if cookies are accepted in Dynamicweb Cookie dialog and check the level that has been accepted. Scripts that sets cookies should respect these settings.
 	//Scripts that does not set cookies, should just be included without any checks
